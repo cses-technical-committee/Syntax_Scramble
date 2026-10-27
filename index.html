@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="description"
+    content="THINK FORGE: SYNTAX SCRAMBLE — A futuristic coding arena and digital puzzle escape room. Reconstruct scrambled nested loops, master indentation, and prove your programming logic.">
+  <meta name="theme-color" content="#101317">
+
+  <title>THINK FORGE — SYNTAX SCRAMBLE | Futuristic Coding Arena</title>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Ambient Audio & Visual Background Elements -->
+  <canvas id="ambient-canvas" aria-hidden="true"></canvas>
+  <div class="grid-overlay" aria-hidden="true"></div>
+  <div class="scanline" aria-hidden="true"></div>
+
+  <!-- Global Navigation & Control Bar -->
+  <header class="global-header" id="global-header">
+    <div class="header-brand">
+      <div class="brand-logo-container" id="brand-logo-container">
+        <div class="default-logo-icon" id="default-logo-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <img src="logo.png" alt="CSES Society Logo" class="brand-logo-img" id="brand-logo-img" style="display: none;">
+      </div>
+      <span class="brand-forge">THINK FORGE</span>
+      <span class="brand-sep" aria-hidden="true">//</span>
+      <span class="brand-scramble">SYNTAX SCRAMBLE</span>
+    </div>
+
+    <div class="header-status" id="header-status" style="display: none;">
+      <div class="status-chip team-chip" id="chip-team">
+        <span class="chip-label">TEAM:</span>
+        <span class="chip-val" id="header-team-name">—</span>
+      </div>
+      <div class="status-chip challenge-chip" id="chip-challenge">
+        <span class="chip-label">CHALLENGE:</span>
+        <span class="chip-val" id="header-challenge-num">01</span>
+      </div>
+      <div class="status-chip timer-chip" id="chip-timer" aria-live="off">
+        <span class="chip-label">TIME:</span>
+        <span class="chip-val highlight" id="header-timer-val">00:00</span>
+      </div>
+      <div class="status-chip attempts-chip" id="chip-attempts" aria-live="polite">
+        <span class="chip-label">ATTEMPTS:</span>
+        <span class="attempts-pips" id="header-attempts-pips" aria-label="3 attempts remaining">
+          <span class="pip active"></span>
+          <span class="pip active"></span>
+          <span class="pip active"></span>
+        </span>
+      </div>
+      <div class="status-chip score-chip" id="chip-score" aria-live="polite">
+        <span class="chip-label">SCORE:</span>
+        <span class="chip-val highlight" id="header-score-val">150</span>
+        <span class="chip-max">/150</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Ambient Audio Toggle -->
+      <button type="button" class="ctrl-btn" id="btn-ambient-audio" title="Toggle Ambient Drone"
+        aria-label="Toggle ambient sound">
+        <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18V5l12-2v13"></path>
+          <circle cx="6" cy="18" r="3"></circle>
+          <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+      </button>
+
+      <!-- Global Sound Effects Mute Button -->
+      <button type="button" class="ctrl-btn" id="btn-sound-toggle" title="Toggle Sound Effects"
+        aria-label="Mute sound effects">
+        <svg class="icon sound-on" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>
+        <svg class="icon sound-off" style="display: none;" viewBox="0 0 24 24" width="18" height="18" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <line x1="23" y1="9" x2="17" y2="15"></line>
+          <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Multi-Screen Container -->
+  <main class="main-container" id="main-container">
+
+    <!-- ======================================================== -->
+    <!-- SCREEN ONE: EVENT INTRODUCTION (Landing Page)           -->
+    <!-- ======================================================== -->
+    <section class="screen active" id="screen-intro" aria-labelledby="intro-title">
+      <div class="intro-content">
+        <div class="intro-badge">PHASE 1 // ROUND 02</div>
+        <h1 class="intro-title" id="intro-title">
+          <span class="title-forge">THINK FORGE</span>
+          <span class="title-scramble">SYNTAX SCRAMBLE</span>
+        </h1>
+        <p class="intro-tagline">"Logic is easy. Proving it is another story."</p>
+
+        <div class="intro-action">
+          <button type="button" class="cyber-btn primary-arena-btn" id="btn-enter-arena">
+            <span class="btn-glow" aria-hidden="true"></span>
+            <span class="btn-text">ENTER THE ARENA</span>
+            <span class="btn-icon" aria-hidden="true">→</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="intro-footer-hud" aria-hidden="true">
+        <div class="hud-item">TERMINAL READY // PORT 8080</div>
+        <div class="hud-item">CHALLENGES: 15 COMPILED PATTERNS</div>
+        <div class="hud-item">SYSTEM STATUS: NOMINAL</div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SCREEN TWO: TEAM REGISTRATION & CINEMATIC WELCOME       -->
+    <!-- ======================================================== -->
+    <section class="screen" id="screen-register" aria-labelledby="reg-heading">
+      <div class="glass-card reg-card">
+        <div class="card-corner tl" aria-hidden="true"></div>
+        <div class="card-corner tr" aria-hidden="true"></div>
+        <div class="card-corner bl" aria-hidden="true"></div>
+        <div class="card-corner br" aria-hidden="true"></div>
+
+        <div class="card-header">
+          <div class="sys-tag">// AUTHENTICATION PROTOCOL</div>
+          <h2 class="card-title" id="reg-heading">Identify Your Team</h2>
+          <p class="card-desc">Enter your team callsign to authenticate your terminal session and link your leaderboard
+            score.</p>
+        </div>
+
+        <form id="form-registration" class="reg-form" novalidate>
+          <div class="input-group">
+            <label for="team-name-input" class="input-label">TEAM NAME</label>
+            <div class="input-wrapper">
+              <span class="input-prefix" aria-hidden="true">&gt;</span>
+              <input type="text" id="team-name-input" class="cyber-input" name="team_name"
+                placeholder="Enter your team name (e.g. Phoenix, NullPointer)" maxlength="40" required
+                autocomplete="off" spellcheck="false">
+            </div>
+            <span class="input-hint" id="reg-error-msg" role="alert">Maximum 40 characters. Spaces trimmed
+              automatically.</span>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="cyber-btn submit-btn" id="btn-init-session">
+              <span class="btn-loader" id="reg-spinner" style="display: none;" aria-hidden="true"></span>
+              <span class="btn-text" id="reg-btn-text">INITIALIZE SESSION</span>
+              <span class="btn-icon" aria-hidden="true">➔</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- SCREEN TWO-B: WELCOME & SARCASTIC BANTER SCREEN -->
+    <section class="screen" id="screen-welcome" aria-labelledby="welcome-greeting">
+      <div class="glass-card welcome-card">
+        <div class="welcome-header">
+          <div class="sys-tag">// SESSION ACTIVE</div>
+          <h2 class="welcome-greeting" id="welcome-greeting">GOOD AFTERNOON</h2>
+          <div class="welcome-team-wrapper">
+            <span class="team-name-typewriter" id="typewriter-team-name"></span>
+            <span class="typewriter-cursor" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <div class="welcome-body">
+          <blockquote class="sarcastic-quote" id="sarcastic-msg">
+            "Well, seniors... now it's your turn to leave an impression on the juniors. Let's see whether your logic is
+            as strong as your reputation."
+          </blockquote>
+          <p class="compiler-warning">
+            <span class="warning-icon" aria-hidden="true">⚠</span>
+            "Choose wisely. The compiler has no sympathy."
+          </p>
+        </div>
+
+        <div class="welcome-actions">
+          <button type="button" class="cyber-btn primary-arena-btn" id="btn-lets-begin">
+            <span class="btn-text">LET'S BEGIN</span>
+            <span class="btn-icon" aria-hidden="true">➔</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SCREEN THREE: CHOOSE YOUR CHALLENGE (15 Cards)          -->
+    <!-- ======================================================== -->
+    <section class="screen" id="screen-challenges" aria-labelledby="challenges-title">
+      <div class="challenges-intro">
+        <div class="sys-tag">// QUANTUM SELECTOR</div>
+        <h2 class="challenges-title" id="challenges-title">YOU CALL IT LUCK. WE CALL IT YOUR CHOICE.</h2>
+        <p class="challenges-subtitle">15 patterns. One decision. Three chances to prove your logic.</p>
+        <p class="challenges-sarcasm">"Don't blame the draw. You chose the number."</p>
+      </div>
+
+      <!-- 15 Numbered Cards Grid -->
+      <div class="cards-grid" id="cards-grid" role="grid" aria-label="15 Pattern Challenges Selection Grid">
+        <!-- Rendered dynamically by script.js -->
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SCREEN FOUR: MAIN SYNTAX SCRAMBLE WORKSPACE             -->
+    <!-- ======================================================== -->
+    <section class="screen" id="screen-game" aria-labelledby="workspace-title">
+      <div class="game-layout">
+
+        <!-- LEFT COLUMN: PATTERN & RULES (~35% Width) -->
+        <aside class="game-left-col">
+
+          <!-- Panel A: Target Pattern -->
+          <div class="game-panel pattern-panel">
+            <div class="panel-header">
+              <div class="panel-title-wrap">
+                <span class="panel-tag">// TARGET</span>
+                <h3 class="panel-title">TARGET PATTERN</h3>
+              </div>
+            </div>
+
+            <div class="pattern-display-container">
+              <div class="pattern-meta-title" id="pattern-meta-title">Pattern 01: Decreasing Star Triangle</div>
+              <pre class="pattern-preview" id="pattern-preview" tabindex="0"
+                aria-label="Target nested loop pattern preview"></pre>
+            </div>
+          </div>
+
+          <!-- Panel B: Rules of the Forge -->
+          <div class="game-panel rules-panel" id="rules-panel">
+            <div class="panel-header rules-toggle-bar" id="rules-toggle-bar">
+              <div class="panel-title-wrap">
+                <span class="panel-tag">// DIRECTIVES</span>
+                <h3 class="panel-title">RULES OF THE FORGE</h3>
+              </div>
+              <button type="button" class="rules-collapse-btn" id="btn-rules-collapse" aria-expanded="true"
+                aria-controls="rules-body">
+                <span class="rules-state-text">COLLAPSE</span>
+                <span class="rules-arrow" aria-hidden="true">▼</span>
+              </button>
+            </div>
+
+            <div class="rules-body" id="rules-body">
+              <ol class="rules-list">
+                <li>Reconstruct the code to match the target pattern.</li>
+                <li>Arrange all code lines in the correct order.</li>
+                <li>Maintain correct indentation.</li>
+                <li>You have three total attempts.</li>
+                <li>Unsuccessful attempts deduct 20, 30, then 40 points.</li>
+                <li>Each team starts with 150 points.</li>
+                <li>After an unsuccessful attempt, the code lines are scrambled again.</li>
+                <li>A score cannot go below zero.</li>
+                <li>Your final score and time taken are submitted when the challenge ends.</li>
+              </ol>
+
+              <div class="rules-metrics-card">
+                <div class="metric-row">
+                  <span class="metric-lbl">TIME ELAPSED:</span>
+                  <span class="metric-val highlight" id="rules-timer-display">00:00</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-lbl">CURRENT SCORE:</span>
+                  <span class="metric-val" id="rules-score-display">150 / 150</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-lbl">ATTEMPTS LEFT:</span>
+                  <span class="metric-val" id="rules-attempts-display">3</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </aside>
+
+        <!-- RIGHT COLUMN: CODE RECONSTRUCTION WORKSPACE (~65% Width) -->
+        <section class="game-right-col">
+          <div class="game-panel workspace-panel">
+
+            <div class="workspace-header">
+              <div class="workspace-title-box">
+                <span class="panel-tag">// CODE RECONSTRUCTION</span>
+                <h3 class="panel-title" id="workspace-title">RECONSTRUCT THE LOGIC</h3>
+              </div>
+
+              <!-- Python / C++ Segmented Control Switch -->
+              <div class="lang-switch-container" role="radiogroup" aria-label="Select Programming Language">
+                <button type="button" class="lang-tab active" id="tab-python" role="radio" aria-checked="true"
+                  data-lang="python">
+                  <span class="lang-dot"></span>
+                  PYTHON
+                </button>
+                <button type="button" class="lang-tab" id="tab-cpp" role="radio" aria-checked="false" data-lang="cpp">
+                  <span class="lang-dot"></span>
+                  C++
+                </button>
+              </div>
+            </div>
+
+            <div class="workspace-instructions">
+              <span class="instruction-icon" aria-hidden="true">ⓘ</span>
+              <span>Drag lines or use Arrow keys to reorder. Adjust indentation using <strong>◀ / ▶</strong>
+                controls.</span>
+            </div>
+
+            <!-- Code Rows Container (Scrambled & Draggable) -->
+            <div class="code-workspace" id="code-workspace" role="list" aria-label="Scrambled Code Lines Workspace">
+              <!-- Draggable code rows rendered dynamically by script.js -->
+            </div>
+
+            <!-- Action Controls Bar -->
+            <div class="workspace-footer">
+              <div class="footer-left-actions">
+                <button type="button" class="cyber-btn secondary-btn" id="btn-shuffle-lines"
+                  title="Shuffle code lines without penalty">
+                  <svg class="btn-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <polyline points="16 3 21 3 21 8"></polyline>
+                    <line x1="4" y1="20" x2="21" y2="3"></line>
+                    <polyline points="21 16 21 21 16 21"></polyline>
+                    <line x1="15" y1="15" x2="21" y2="21"></line>
+                    <line x1="4" y1="4" x2="9" y2="9"></line>
+                  </svg>
+                  <span>SHUFFLE AGAIN</span>
+                </button>
+
+                <button type="button" class="cyber-btn secondary-btn" id="btn-reset-indents"
+                  title="Reset all line indentations to zero">
+                  <span>RESET INDENTS</span>
+                </button>
+              </div>
+
+              <div class="footer-right-actions">
+                <button type="button" class="cyber-btn primary-arena-btn check-logic-btn" id="btn-check-logic">
+                  <span class="btn-glow" aria-hidden="true"></span>
+                  <span class="btn-loader" id="check-spinner" style="display: none;" aria-hidden="true"></span>
+                  <span class="btn-text" id="check-btn-text">CHECK MY LOGIC</span>
+                  <span class="btn-icon" aria-hidden="true">✓</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SCREEN FIVE: FINAL RESULT & COMPLETION SCREEN           -->
+    <!-- ======================================================== -->
+    <section class="screen" id="screen-result" aria-labelledby="result-title">
+      <div class="glass-card result-card" id="result-card">
+        <div class="card-corner tl" aria-hidden="true"></div>
+        <div class="card-corner tr" aria-hidden="true"></div>
+        <div class="card-corner bl" aria-hidden="true"></div>
+        <div class="card-corner br" aria-hidden="true"></div>
+
+        <div class="result-badge-wrap">
+          <img src="logo.png" alt="CSES Society Logo" class="result-society-logo" id="result-society-logo">
+          <div class="result-status-icon" id="result-status-icon">✓</div>
+        </div>
+
+        <div class="result-header">
+          <h2 class="result-title" id="result-title">LOGIC VERIFIED.</h2>
+          <p class="result-subtitle" id="result-subtitle">You've earned your place in the Forge.</p>
+        </div>
+
+        <!-- Score Reveal Counter -->
+        <div class="result-score-block">
+          <div class="score-label">FINAL SCORE</div>
+          <div class="score-counter-wrap">
+            <span class="score-number" id="result-final-score">150</span>
+            <span class="score-total">/ 150</span>
+          </div>
+          <div class="score-bar-track">
+            <div class="score-bar-fill" id="result-score-bar" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <!-- Result Breakdown Details -->
+        <div class="result-details-grid">
+          <div class="detail-box">
+            <span class="d-label">TEAM CALLSIGN</span>
+            <span class="d-val" id="res-team-name">—</span>
+          </div>
+          <div class="detail-box">
+            <span class="d-label">CHALLENGE</span>
+            <span class="d-val" id="res-challenge-num">#01</span>
+          </div>
+          <div class="detail-box">
+            <span class="d-label">LANGUAGE</span>
+            <span class="d-val" id="res-language">PYTHON</span>
+          </div>
+          <div class="detail-box">
+            <span class="d-label">FAILED ATTEMPTS</span>
+            <span class="d-val" id="res-failed-attempts">0</span>
+          </div>
+          <div class="detail-box">
+            <span class="d-label">TIME TAKEN</span>
+            <span class="d-val highlight" id="res-time-taken">00:00</span>
+          </div>
+        </div>
+
+        <section class="code-review" aria-labelledby="code-review-title">
+          <div class="code-review-header">
+            <div>
+              <span class="panel-tag">// POST-RUN REVIEW</span>
+              <h3 class="panel-title" id="code-review-title">CODE REVIEW</h3>
+            </div>
+            <div class="lang-switch-container review-lang-switch" role="radiogroup" aria-label="Code review language">
+              <button type="button" class="lang-tab active" id="review-tab-python" role="radio" aria-checked="true"
+                data-review-lang="python">PYTHON</button>
+              <button type="button" class="lang-tab" id="review-tab-cpp" role="radio" aria-checked="false"
+                data-review-lang="cpp">C++</button>
+            </div>
+          </div>
+          <div class="code-review-grid">
+            <div class="review-code-panel">
+              <h4>Your submitted code</h4>
+              <pre id="review-submitted-code" aria-live="polite"></pre>
+            </div>
+            <div class="review-code-panel">
+              <h4>Correct solution</h4>
+              <pre id="review-correct-code"></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Formspree Leaderboard Submission Status Card -->
+        <div class="formspree-status-card" id="formspree-status-card">
+          <div class="fs-status-info">
+            <span class="fs-icon" id="fs-icon" aria-hidden="true">●</span>
+            <div class="fs-text-wrap">
+              <div class="fs-status-title" id="fs-status-title">Submitting Result to Leaderboard...</div>
+              <div class="fs-status-desc" id="fs-status-desc">Synchronizing with Formspree endpoint.</div>
+            </div>
+          </div>
+          <button type="button" class="cyber-btn fs-retry-btn" id="btn-fs-retry" style="display: none;">
+            RETRY SUBMIT
+          </button>
+        </div>
+
+        <!-- Action Controls -->
+        <div class="result-actions">
+          <button type="button" class="cyber-btn primary-arena-btn" id="btn-play-again">
+            <span>START NEW SESSION</span>
+            <span class="btn-icon" aria-hidden="true">➔</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- DIGITAL VAULT UNLOCK & WARM FLASH OVERLAY               -->
+  <!-- ======================================================== -->
+  <div class="vault-overlay" id="vault-overlay" aria-hidden="true">
+    <div class="warm-flash" id="warm-flash"></div>
+
+    <div class="vault-container" id="vault-container">
+      <div class="vault-brand">ACCESSING FORGE VAULT</div>
+      <div class="vault-dial-box">
+        <svg class="vault-svg" viewBox="0 0 200 200" width="220" height="220">
+          <!-- Outer Dial Ring -->
+          <circle class="vault-ring outer-ring" cx="100" cy="100" r="90"></circle>
+          <!-- Mid Dial Notch Ring -->
+          <circle class="vault-ring mid-ring" cx="100" cy="100" r="75"></circle>
+          <!-- Inner Core -->
+          <circle class="vault-ring inner-ring" cx="100" cy="100" r="50"></circle>
+          <!-- Mechanical Lock Pins / Markers -->
+          <line class="lock-pin p1" x1="100" y1="10" x2="100" y2="25"></line>
+          <line class="lock-pin p2" x1="100" y1="175" x2="100" y2="190"></line>
+          <line class="lock-pin p3" x1="10" y1="100" x2="25" y2="100"></line>
+          <line class="lock-pin p4" x1="175" y1="100" x2="190" y2="100"></line>
+        </svg>
+
+        <div class="vault-number" id="vault-challenge-number">01</div>
+        <div class="vault-lock-icon" id="vault-lock-icon">🔒</div>
+      </div>
+
+      <div class="vault-status-text" id="vault-status-text">DECRYPTING LOGIC PROTOCOLS...</div>
+      <div class="vault-bar-track">
+        <div class="vault-bar-fill" id="vault-bar-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Center -->
+  <div class="toast-center" id="toast-center" role="region" aria-live="assertive" aria-label="System Notifications">
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal-backdrop" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"
+    style="display: none;">
+    <div class="glass-card modal-card">
+      <h3 class="modal-title" id="modal-title">RESET PROGRESS?</h3>
+      <p class="modal-desc" id="modal-desc">This will reset your current indentation adjustments. Your attempts will
+        remain unchanged.</p>
+      <div class="modal-actions">
+        <button type="button" class="cyber-btn secondary-btn" id="btn-modal-cancel">CANCEL</button>
+        <button type="button" class="cyber-btn primary-arena-btn" id="btn-modal-confirm">PROCEED</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="patterns.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
